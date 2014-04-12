@@ -49,9 +49,13 @@ public class DialogMaker {
 				for (Integer integer : userPrefs.keySet()) {
 					Log.d(TAG, "printing Hashmap");
 					String key = integer.toString();
-					String value = String.valueOf(userPrefs.get(integer));
-					System.out.println(key + " " + value);
-					Log.d(TAG, key + "  " + value);
+
+					for (boolean value : userPrefs.get(integer)) {
+						String print = String.valueOf(value);
+						System.out.println(key + " " + print);
+						Log.d(TAG, key + "  " + print);
+					}
+
 				}
 			}
 		});
