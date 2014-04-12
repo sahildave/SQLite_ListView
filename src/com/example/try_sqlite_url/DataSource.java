@@ -100,7 +100,6 @@ public class DataSource {
 				Headlines newHeadline = createHeadline(cursor);
 				arraylist.add(newHeadline);
 			}
-			Log.d(TAG, "arraylist " + arraylist.toString());
 
 		} catch (Throwable t) {
 			Log.d(TAG, t.toString());

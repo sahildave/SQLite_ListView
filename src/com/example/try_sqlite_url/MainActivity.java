@@ -1,20 +1,30 @@
 package com.example.try_sqlite_url;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
 public class MainActivity extends ListActivity {
 	private String TAG = "SQLITE_URL";
+
 	public String url;
 	String TOIurl = "http://timesofindia.feedsportal.com/c/33039/f/533921/index.rss";
 	String HinduUrl = "http://www.hindu.com/rss/07hdline.xml";
+
+	MyExpandableListAdapter myListAdapter;
+	List<String> listDataHeader;
+	HashMap<String, List<String>> listDataChild;
+
+	final Context context_dialog = this;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +34,14 @@ public class MainActivity extends ListActivity {
 		ArrayAdapter<Headlines> adapter = new ArrayAdapter<Headlines>(this,
 				android.R.layout.simple_list_item_1, new ArrayList<Headlines>());
 		setListAdapter(adapter);
+
+		new DialogMaker(context_dialog);
+		DisplayMetrics metrics = getResources().getDisplayMetrics();
+		int width = metrics.widthPixels;
+		int height = metrics.heightPixels;
+		DialogMaker.dialog.getWindow().setLayout((width * 9) / 10,
+				(height * 9) / 10);
+
 	}
 
 	public void onClick(View view) {
@@ -81,7 +99,6 @@ public class MainActivity extends ListActivity {
 
 		@Override
 		protected void onPostExecute(ArrayList<Headlines> result) {
-			// TODO Auto-generated method stub
 			super.onPostExecute(result);
 			// Log.d(TAG, "onPostExecute "+result.toString());
 			ArrayAdapter<Headlines> asyncAdapter = (ArrayAdapter<Headlines>) getListAdapter();
