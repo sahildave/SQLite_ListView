@@ -9,8 +9,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
 	private String TAG = "SQLITE_URL";
 
-	private static final String DATABASE_NAME = "feeds_six.db";
-	private static final int DATABASE_VERSION = 1;
+	private static final String DATABASE_NAME = "feeds_seven.db";
+	private static final int DATABASE_VERSION = 3;
 
 	public static final String TABLE_TOI = "toi";
 	public static final String TABLE_HINDU = "hindu";
@@ -78,19 +78,21 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 		db.execSQL(CREATE_TABLE_NEWSPAPER);
 		db.execSQL(CREATE_TABLE_CATEGORY);
 		db.execSQL(CREATE_TABLE_NEWSPAPER_CATEGORY);
-		
+
 		Log.d(TAG, "in onCreate MySQLhelper");
 
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
+		Log.d(TAG, "Upgrading database from version " + oldVersion + " to "
 				+ newVersion + ", which will destroy all data");
 
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_TOI);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_HINDU);
-
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NEWSPAPER);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORY);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NEWSPAPER_CATEGORY);
 		onCreate(db);
 
 	}

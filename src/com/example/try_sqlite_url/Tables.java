@@ -17,6 +17,7 @@ public class Tables {
 		try {
 			createTableNewspaper();
 			createTableCategory();
+			createTableNewsCat();
 			database.setTransactionSuccessful();
 		} finally {
 			database.endTransaction();
@@ -69,4 +70,37 @@ public class Tables {
 		}
 	}
 
+	private void createTableNewsCat() {
+
+		Log.d(TAG, "in createTableNewsCat");
+
+		String link_array[] = { "CAT_NAT", "CAT_INTER", "CAT_POLI",
+				"CAT_SPORTS", "CAT_ENTER", "CAT_NAT", "CAT_INTER", "CAT_POLI",
+				"CAT_SPORTS", "CAT_ENTER", "CAT_NAT", "CAT_INTER", "CAT_POLI",
+				"CAT_SPORTS", "CAT_ENTER", "CAT_NAT", "CAT_INTER", "CAT_POLI",
+				"CAT_SPORTS", "CAT_ENTER" };
+
+		String sql = "INSERT INTO " + MySQLiteHelper.TABLE_NEWSPAPER_CATEGORY
+				+ " (" + MySQLiteHelper.COLUMN_ID + " ,"
+				+ MySQLiteHelper.COLUMN_NEWSPAPER_ID + " ,"
+				+ MySQLiteHelper.COLUMN_CATEGORY_ID + " ,"
+				+ MySQLiteHelper.COLUMN_URL + ")" + " VALUES(?, ?, ?, ?)";
+
+		SQLiteStatement statement = database.compileStatement(sql);
+		int count = 1;
+
+		for (int i = 1; i < 5; i++) {
+
+			for (int j = 1; j < 6; j++) {
+
+				statement.clearBindings();
+				statement.bindLong(1, count);
+				statement.bindLong(2, i);
+				statement.bindLong(3, j);
+				statement.bindString(4, link_array[count - 1]);
+				statement.execute();
+				count++;
+			}
+		}
+	}
 }
