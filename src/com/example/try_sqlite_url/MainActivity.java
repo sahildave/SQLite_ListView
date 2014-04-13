@@ -82,6 +82,7 @@ public class MainActivity extends ListActivity {
 
 		public MyAsyncTask(Context context) {
 			ctx = context;
+			Log.d(TAG, "InAsync");
 		}
 
 		@Override

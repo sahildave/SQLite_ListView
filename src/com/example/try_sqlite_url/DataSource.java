@@ -30,11 +30,30 @@ public class DataSource {
 	private String useTable;
 
 	public DataSource(Context context) {
+		Log.d(TAG, "in DataSource Context");
+
 		dbhelper = new MySQLiteHelper(context);
+
 	}
 
 	public void open() throws SQLException {
+
+		Log.d(TAG, "in DataSource Open");
+
 		database = dbhelper.getWritableDatabase();
+
+		new Tables(database);
+
+		// Checking Table
+		Cursor cursor = database.query(MySQLiteHelper.TABLE_CATEGORY, null,
+				null, null, null, null, null);
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			Log.d(TAG, "_id   " + cursor.getInt(0));
+			Log.d(TAG, "name   " + cursor.getString(1));
+			cursor.moveToNext();
+		}
+		cursor.close();
 	}
 
 	public void close() {

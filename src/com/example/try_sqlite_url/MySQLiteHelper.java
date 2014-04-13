@@ -9,7 +9,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
 	private String TAG = "SQLITE_URL";
 
-	private static final String DATABASE_NAME = "feeds_three.db";
+	private static final String DATABASE_NAME = "feeds_six.db";
 	private static final int DATABASE_VERSION = 1;
 
 	public static final String TABLE_TOI = "toi";
@@ -18,6 +18,18 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 	public static final String COLUMN_ID = "_id";
 	public static final String COLUMN_TITLE = "title";
 	public static final String COLUMN_LINK = "link";
+
+	// new
+	public static final String COLUMN_NEWSPAPER_NAME = "newspaper_name_column";
+	public static final String COLUMN_NEWSPAPER_LANGUAGE = "language_column";
+	public static final String COLUMN_CATEGORY_NAME = "category_name_column";
+	public static final String COLUMN_NEWSPAPER_ID = "newspaper_id_column";
+	public static final String COLUMN_CATEGORY_ID = "category_id_column";
+	public static final String COLUMN_URL = "url_column";
+
+	public static final String TABLE_NEWSPAPER = "newspaper_table";
+	public static final String TABLE_CATEGORY = "category_table";
+	public static final String TABLE_NEWSPAPER_CATEGORY = "newspaper_category_table";
 
 	//@formatter:off
 	private static final String CREATE_TABLE_TOI = 
@@ -32,6 +44,26 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 			+ COLUMN_TITLE + " TEXT NOT NULL, "
 			+ COLUMN_LINK + " TEXT NOT NULL);";
 	
+	//new
+	
+	private static final String CREATE_TABLE_NEWSPAPER = 
+			"CREATE TABLE " + TABLE_NEWSPAPER + "(" 
+			+ COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+			+ COLUMN_NEWSPAPER_NAME + " TEXT NOT NULL, "
+			+ COLUMN_NEWSPAPER_LANGUAGE + " TEXT NOT NULL);";
+	
+	private static final String CREATE_TABLE_CATEGORY = 
+			"CREATE TABLE " + TABLE_CATEGORY + "(" 
+			+ COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+			+ COLUMN_CATEGORY_NAME + " TEXT NOT NULL);";
+	
+	private static final String CREATE_TABLE_NEWSPAPER_CATEGORY = 
+			"CREATE TABLE " + TABLE_NEWSPAPER_CATEGORY + "(" 
+			+ COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+			+ COLUMN_NEWSPAPER_ID + " TEXT NOT NULL, "
+			+ COLUMN_CATEGORY_ID + " TEXT NOT NULL, "
+			+ COLUMN_URL + " TEXT NOT NULL);";
+	
 	
 	//@formatter:on
 
@@ -43,6 +75,12 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL(CREATE_TABLE_TOI);
 		db.execSQL(CREATE_TABLE_HINDU);
+		db.execSQL(CREATE_TABLE_NEWSPAPER);
+		db.execSQL(CREATE_TABLE_CATEGORY);
+		db.execSQL(CREATE_TABLE_NEWSPAPER_CATEGORY);
+		
+		Log.d(TAG, "in onCreate MySQLhelper");
+
 	}
 
 	@Override
