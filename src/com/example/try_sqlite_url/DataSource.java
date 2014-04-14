@@ -30,7 +30,7 @@ public class DataSource {
 	private String useTable;
 
 	public DataSource(Context context) {
-		Log.d(TAG, "in DataSource Context");
+		Log.d("TABLE", "in DataSource Context");
 
 		dbhelper = new MySQLiteHelper(context);
 
@@ -38,28 +38,25 @@ public class DataSource {
 
 	public void open() throws SQLException {
 
-		Log.d(TAG, "in DataSource Open");
+		Log.d("TABLE", "in DataSource Open");
 
 		database = dbhelper.getWritableDatabase();
 
-		new Tables(database);
-
-		 // Checking Table
-		 Cursor cursor =
-		 database.query(MySQLiteHelper.TABLE_NEWSPAPER_CATEGORY,
-		 null, null, null, null, null, null);
-		 cursor.moveToFirst();
-		 Log.d("TABLE", "id    news    cat    url");
-		 while (!cursor.isAfterLast()) {
-		 int id = cursor.getInt(0);
-		 int news = cursor.getInt(1);
-		 int cat = cursor.getInt(2);
-		 String url = cursor.getString(3);
-		
-		 Log.d("TABLE", id + "    " + news + "    " + cat + "    " + url);
-		 cursor.moveToNext();
-		 }
-		 cursor.close();
+		// // Checking Table
+		// Cursor cursor = database.query(MySQLiteHelper.TABLE_NCUP, null, null,
+		// null, null, null, null);
+		// cursor.moveToFirst();
+		// Log.d("TABLE", "id    news    cat    url");
+		// while (!cursor.isAfterLast()) {
+		// int id = cursor.getInt(0);
+		// int news = cursor.getInt(1);
+		// int cat = cursor.getInt(2);
+		// String url = cursor.getString(3);
+		//
+		// Log.d("TABLE", id + "    " + news + "    " + cat + "    " + url);
+		// cursor.moveToNext();
+		// }
+		// cursor.close();
 	}
 
 	public void close() {

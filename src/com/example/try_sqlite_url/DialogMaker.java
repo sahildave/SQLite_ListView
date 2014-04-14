@@ -1,6 +1,7 @@
 package com.example.try_sqlite_url;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -44,19 +45,29 @@ public class DialogMaker {
 		doneButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				
 				HashMap<Integer, boolean[]> userPrefs = MyExpandableListAdapter.mChildCheckStates;
-
-				for (Integer integer : userPrefs.keySet()) {
-					Log.d(TAG, "printing Hashmap");
-					String key = integer.toString();
-
-					for (boolean value : userPrefs.get(integer)) {
-						String print = String.valueOf(value);
-						System.out.println(key + " " + print);
-						Log.d(TAG, key + "  " + print);
+				int[] ncup = new int[20];
+				
+				for (int i = 0; i < 4; i++) {
+					if (!userPrefs.containsKey(i)) {
+						for (int j = 0; j < 5; j++) {
+							ncup[(i * 5) + j] = 0;
+						}
+					} else {
+						int indexCount = 0;
+						for (boolean value : userPrefs.get(i)) {
+							if (value) {
+								ncup[(i * 5) + indexCount] = 1;
+							} else {
+								ncup[(i * 5) + indexCount] = 0;
+							}
+							indexCount++;
+						}
 					}
-
 				}
+				Log.d("TABLE", Arrays.toString(ncup));
+				new Tables(ncup);
 				dialog.dismiss();
 			}
 		});
@@ -69,8 +80,9 @@ public class DialogMaker {
 
 		// Adding child data
 		listDataHeader.add("Times of India");
-		listDataHeader.add("Hindustand Times");
+		listDataHeader.add("Hindustan Times");
 		listDataHeader.add("FirstPost");
+		listDataHeader.add("The Hindu");
 
 		// Adding child data
 		List<String> TOI = new ArrayList<String>();
@@ -94,9 +106,17 @@ public class DialogMaker {
 		FP.add("Sports");
 		FP.add("Entertainment");
 
+		List<String> TH = new ArrayList<String>();
+		TH.add("National");
+		TH.add("International");
+		TH.add("Politics");
+		TH.add("Sports");
+		TH.add("Entertainment");
+
 		listDataChild.put(listDataHeader.get(0), TOI); // Header, Child data
 		listDataChild.put(listDataHeader.get(1), HT);
 		listDataChild.put(listDataHeader.get(2), FP);
+		listDataChild.put(listDataHeader.get(3), TH);
 	}
 
 }

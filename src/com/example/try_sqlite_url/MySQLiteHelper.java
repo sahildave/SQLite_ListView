@@ -9,7 +9,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
 	private String TAG = "SQLITE_URL";
 
-	private static final String DATABASE_NAME = "feeds_seven.db";
+	private static final String DATABASE_NAME = "feeds_2i2.db";
 	private static final int DATABASE_VERSION = 3;
 
 	public static final String TABLE_TOI = "toi";
@@ -19,7 +19,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 	public static final String COLUMN_TITLE = "title";
 	public static final String COLUMN_LINK = "link";
 
-	// new
 	public static final String COLUMN_NEWSPAPER_NAME = "newspaper_name_column";
 	public static final String COLUMN_NEWSPAPER_LANGUAGE = "language_column";
 	public static final String COLUMN_CATEGORY_NAME = "category_name_column";
@@ -30,6 +29,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 	public static final String TABLE_NEWSPAPER = "newspaper_table";
 	public static final String TABLE_CATEGORY = "category_table";
 	public static final String TABLE_NEWSPAPER_CATEGORY = "newspaper_category_table";
+
+	// new
+	public static final String TABLE_NCUP = "ncup_table";
 
 	//@formatter:off
 	private static final String CREATE_TABLE_TOI = 
@@ -44,7 +46,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 			+ COLUMN_TITLE + " TEXT NOT NULL, "
 			+ COLUMN_LINK + " TEXT NOT NULL);";
 	
-	//new
 	
 	private static final String CREATE_TABLE_NEWSPAPER = 
 			"CREATE TABLE " + TABLE_NEWSPAPER + "(" 
@@ -64,6 +65,12 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 			+ COLUMN_CATEGORY_ID + " TEXT NOT NULL, "
 			+ COLUMN_URL + " TEXT NOT NULL);";
 	
+	//new
+	private static final String CREATE_TABLE_NCUP = 
+			"CREATE TABLE " + TABLE_NCUP + "(" 
+			+ COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+			+ COLUMN_NEWSPAPER_ID + " TEXT NOT NULL, "
+			+ COLUMN_CATEGORY_ID + " TEXT NOT NULL);";
 	
 	//@formatter:on
 
@@ -78,14 +85,18 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 		db.execSQL(CREATE_TABLE_NEWSPAPER);
 		db.execSQL(CREATE_TABLE_CATEGORY);
 		db.execSQL(CREATE_TABLE_NEWSPAPER_CATEGORY);
+		db.execSQL(CREATE_TABLE_NCUP);
 
-		Log.d(TAG, "in onCreate MySQLhelper");
-
+		Log.d("TABLE", "in onCreate MySQLhelper");
+		Log.d("TABLE", "db.isOpen 1 " + db.isOpen());
+		new Tables(db);
+		Log.d("TABLE", "db.isOpen 2 " + db.isOpen());
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		Log.d(TAG, "Upgrading database from version " + oldVersion + " to "
+
+		Log.d("TABLE", "Upgrading database from version " + oldVersion + " to "
 				+ newVersion + ", which will destroy all data");
 
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_TOI);
@@ -93,6 +104,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NEWSPAPER);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORY);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NEWSPAPER_CATEGORY);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NCUP);
+
 		onCreate(db);
 
 	}

@@ -8,17 +8,20 @@ public class Tables {
 	private String TAG = "SQLITE_URL";
 	private SQLiteDatabase database;
 
-	public Tables(SQLiteDatabase database) {
+	public Tables(SQLiteDatabase db) {
+		Log.d("TABLE", "in Tables constructor databas");
+		database = db;
+		createTableNewspaper();
+		createTableCategory();
+		createTableNewsCat();
+	}
 
-		this.database = database;
+	public Tables(int[] ncup_array) {
+		Log.d("TABLE", "in Tables constructor array");
 
 		database.beginTransaction();
-
 		try {
-			createTableNewspaper();
-			createTableCategory();
-			createTableNewsCat();
-			database.setTransactionSuccessful();
+			createNCUPtable(ncup_array);
 		} finally {
 			database.endTransaction();
 		}
@@ -26,7 +29,7 @@ public class Tables {
 
 	private void createTableNewspaper() {
 
-		Log.d(TAG, "in createTableNewspaper");
+		Log.d("TABLE", "in createTableNewspaper");
 
 		String newspaper_array[][] = { { "NP_TOI", "en" },
 				{ "NP_HINDU", "en" }, { "NP_FP", "en" }, { "NP_HT", "en" } };
@@ -36,6 +39,9 @@ public class Tables {
 				+ MySQLiteHelper.COLUMN_NEWSPAPER_NAME + " ,"
 				+ MySQLiteHelper.COLUMN_NEWSPAPER_LANGUAGE + ")"
 				+ " VALUES(?, ?, ?)";
+
+		Log.d("TABLE", "db.isOpen TN " + database.isOpen());
+
 		SQLiteStatement statement = database.compileStatement(sql);
 
 		for (int i = 0; i < 4; i++) {
@@ -50,7 +56,7 @@ public class Tables {
 
 	private void createTableCategory() {
 
-		Log.d(TAG, "in createTableCategory");
+		Log.d("TABLE", "in createTableCategory");
 
 		String category_array[] = { "CAT_NAT", "CAT_INTER", "CAT_POLI",
 				"CAT_SPORTS", "CAT_ENTER" };
@@ -58,6 +64,8 @@ public class Tables {
 		String sql = "INSERT INTO " + MySQLiteHelper.TABLE_CATEGORY + " ("
 				+ MySQLiteHelper.COLUMN_ID + " ,"
 				+ MySQLiteHelper.COLUMN_CATEGORY_NAME + ")" + " VALUES(?, ?)";
+
+		Log.d("TABLE", "db.isOpen TC " + database.isOpen());
 
 		SQLiteStatement statement = database.compileStatement(sql);
 
@@ -72,7 +80,7 @@ public class Tables {
 
 	private void createTableNewsCat() {
 
-		Log.d(TAG, "in createTableNewsCat");
+		Log.d("TABLE", "in createTableNewsCat");
 
 		String link_array[] = { "CAT_NAT", "CAT_INTER", "CAT_POLI",
 				"CAT_SPORTS", "CAT_ENTER", "CAT_NAT", "CAT_INTER", "CAT_POLI",
@@ -85,6 +93,8 @@ public class Tables {
 				+ MySQLiteHelper.COLUMN_NEWSPAPER_ID + " ,"
 				+ MySQLiteHelper.COLUMN_CATEGORY_ID + " ,"
 				+ MySQLiteHelper.COLUMN_URL + ")" + " VALUES(?, ?, ?, ?)";
+
+		Log.d("TABLE", "db.isOpen TNC " + database.isOpen());
 
 		SQLiteStatement statement = database.compileStatement(sql);
 		int count = 1;
@@ -99,6 +109,35 @@ public class Tables {
 				statement.bindLong(3, j);
 				statement.bindString(4, link_array[count - 1]);
 				statement.execute();
+				count++;
+			}
+		}
+	}
+
+	private void createNCUPtable(int[] ncup) {
+
+		Log.d("TABLE", "in createNCUPtable");
+
+		String sql = "INSERT INTO " + MySQLiteHelper.TABLE_NCUP + " ("
+				+ MySQLiteHelper.COLUMN_ID + " ,"
+				+ MySQLiteHelper.COLUMN_NEWSPAPER_ID + " ,"
+				+ MySQLiteHelper.COLUMN_CATEGORY_ID + ")" + " VALUES(?, ?, ?)";
+
+		Log.d("TABLE", "db.isOpen TNCUP " + database.isOpen());
+
+		SQLiteStatement statement = database.compileStatement(sql);
+		int count = 1;
+		for (int i = 0; i < 4; i++) {
+
+			for (int j = 0; j < 5; j++) {
+
+				if (ncup[(i * 5) + j] == 1) {
+					statement.clearBindings();
+					statement.bindLong(1, count);
+					statement.bindLong(2, i + 1);
+					statement.bindLong(3, j + 1);
+					statement.execute();
+				}
 				count++;
 			}
 		}
