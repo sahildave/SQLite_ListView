@@ -17,6 +17,7 @@ public class MainActivity extends ListActivity {
 	private String TAG = "SQLITE_URL";
 
 	public String url;
+	public static DataSource source;
 	String TOIurl = "http://timesofindia.feedsportal.com/c/33039/f/533921/index.rss";
 	String HinduUrl = "http://www.hindu.com/rss/07hdline.xml";
 
@@ -88,11 +89,11 @@ public class MainActivity extends ListActivity {
 		@Override
 		protected ArrayList<Headlines> doInBackground(Void... params) {
 
-			DataSource source = new DataSource(ctx);
+			source = new DataSource(ctx);
 			source.open();
 			Log.d(TAG, "inBackground url " + url);
 			values = source.newspaper(url);
-			source.close();
+			// source.close();
 
 			return values;
 

@@ -19,8 +19,9 @@ import android.util.Log;
 
 public class DataSource {
 	private String TAG = "SQLITE_URL";
-	private SQLiteDatabase database;
-	private MySQLiteHelper dbhelper;
+	public SQLiteDatabase database;
+	public MySQLiteHelper dbhelper;
+
 	private String[] allColumns = { MySQLiteHelper.COLUMN_ID,
 			MySQLiteHelper.COLUMN_TITLE, MySQLiteHelper.COLUMN_LINK };
 
@@ -32,32 +33,22 @@ public class DataSource {
 	public DataSource(Context context) {
 		Log.d("TABLE", "in DataSource Context");
 
-		dbhelper = new MySQLiteHelper(context);
+		dbhelper = MySQLiteHelper.getInstance(context);
 
 	}
 
 	public void open() throws SQLException {
 
 		Log.d("TABLE", "in DataSource Open");
-
 		database = dbhelper.getWritableDatabase();
 
-		// // Checking Table
-		// Cursor cursor = database.query(MySQLiteHelper.TABLE_NCUP, null, null,
-		// null, null, null, null);
-		// cursor.moveToFirst();
-		// Log.d("TABLE", "id    news    cat    url");
-		// while (!cursor.isAfterLast()) {
-		// int id = cursor.getInt(0);
-		// int news = cursor.getInt(1);
-		// int cat = cursor.getInt(2);
-		// String url = cursor.getString(3);
-		//
-		// Log.d("TABLE", id + "    " + news + "    " + cat + "    " + url);
-		// cursor.moveToNext();
-		// }
-		// cursor.close();
+		Log.d("TABLE", "in DataSource getting Instance");
+		Tables tablesInstance = Tables.getInstance();
+		tablesInstance.getDatabase(database);
+
 	}
+
+	
 
 	public void close() {
 		dbhelper.close();

@@ -45,10 +45,10 @@ public class DialogMaker {
 		doneButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				
+
 				HashMap<Integer, boolean[]> userPrefs = MyExpandableListAdapter.mChildCheckStates;
 				int[] ncup = new int[20];
-				
+
 				for (int i = 0; i < 4; i++) {
 					if (!userPrefs.containsKey(i)) {
 						for (int j = 0; j < 5; j++) {
@@ -67,7 +67,10 @@ public class DialogMaker {
 					}
 				}
 				Log.d("TABLE", Arrays.toString(ncup));
-				new Tables(ncup);
+
+				Tables instance = Tables.getInstance();
+				Log.d("TABLE", "got instance");
+				instance.createUserPrefTables(ncup);
 				dialog.dismiss();
 			}
 		});

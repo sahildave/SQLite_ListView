@@ -7,6 +7,10 @@ import android.util.Log;
 
 public class MySQLiteHelper extends SQLiteOpenHelper {
 
+	private static MySQLiteHelper sInstance;
+	public Tables tablesInstance;
+	public SQLiteDatabase database;
+
 	private String TAG = "SQLITE_URL";
 
 	private static final String DATABASE_NAME = "feeds_2i2.db";
@@ -31,6 +35,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 	public static final String TABLE_NEWSPAPER_CATEGORY = "newspaper_category_table";
 
 	// new
+	public static final String COLUMN_NC_ID = "newspaper_cat_id_column";
 	public static final String TABLE_NCUP = "ncup_table";
 
 	//@formatter:off
@@ -45,7 +50,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 			+ COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
 			+ COLUMN_TITLE + " TEXT NOT NULL, "
 			+ COLUMN_LINK + " TEXT NOT NULL);";
-	
 	
 	private static final String CREATE_TABLE_NEWSPAPER = 
 			"CREATE TABLE " + TABLE_NEWSPAPER + "(" 
@@ -69,10 +73,18 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 	private static final String CREATE_TABLE_NCUP = 
 			"CREATE TABLE " + TABLE_NCUP + "(" 
 			+ COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+			+ COLUMN_NC_ID + " TEXT NOT NULL, "
 			+ COLUMN_NEWSPAPER_ID + " TEXT NOT NULL, "
 			+ COLUMN_CATEGORY_ID + " TEXT NOT NULL);";
 	
 	//@formatter:on
+
+	public static MySQLiteHelper getInstance(Context context) {
+		if (sInstance == null) {
+			sInstance = new MySQLiteHelper(context);
+		}
+		return sInstance;
+	}
 
 	public MySQLiteHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -87,10 +99,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 		db.execSQL(CREATE_TABLE_NEWSPAPER_CATEGORY);
 		db.execSQL(CREATE_TABLE_NCUP);
 
+		Tables tablesInstance = Tables.getInstance();
+		tablesInstance.createStartupTables(db);
+
 		Log.d("TABLE", "in onCreate MySQLhelper");
-		Log.d("TABLE", "db.isOpen 1 " + db.isOpen());
-		new Tables(db);
-		Log.d("TABLE", "db.isOpen 2 " + db.isOpen());
 	}
 
 	@Override

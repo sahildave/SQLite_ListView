@@ -1,35 +1,44 @@
 package com.example.try_sqlite_url;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
 public class Tables {
-	private String TAG = "SQLITE_URL";
+	private String TAG = "TABLE";
 	private SQLiteDatabase database;
 
-	public Tables(SQLiteDatabase db) {
-		Log.d("TABLE", "in Tables constructor databas");
+	public static Tables tableInstance;
+
+	public static Tables getInstance() {
+		if (tableInstance == null) {
+			tableInstance = new Tables();
+			Log.d("TABLE", "getting new Table Instance");
+		}
+		return tableInstance;
+	}
+
+	private Tables() {
+		Log.d(TAG, "in Tables constructor.");
+	}
+
+	public void getDatabase(SQLiteDatabase db) {
+		Log.d(TAG, "In getDatabase");
+		database = db;
+	}
+
+	public void createStartupTables(SQLiteDatabase db) {
+		Log.d(TAG, "in createStartupTables");
 		database = db;
 		createTableNewspaper();
 		createTableCategory();
 		createTableNewsCat();
 	}
 
-	public Tables(int[] ncup_array) {
-		Log.d("TABLE", "in Tables constructor array");
-
-		database.beginTransaction();
-		try {
-			createNCUPtable(ncup_array);
-		} finally {
-			database.endTransaction();
-		}
-	}
-
 	private void createTableNewspaper() {
 
-		Log.d("TABLE", "in createTableNewspaper");
+		Log.d(TAG, "in createTableNewspaper");
 
 		String newspaper_array[][] = { { "NP_TOI", "en" },
 				{ "NP_HINDU", "en" }, { "NP_FP", "en" }, { "NP_HT", "en" } };
@@ -39,8 +48,6 @@ public class Tables {
 				+ MySQLiteHelper.COLUMN_NEWSPAPER_NAME + " ,"
 				+ MySQLiteHelper.COLUMN_NEWSPAPER_LANGUAGE + ")"
 				+ " VALUES(?, ?, ?)";
-
-		Log.d("TABLE", "db.isOpen TN " + database.isOpen());
 
 		SQLiteStatement statement = database.compileStatement(sql);
 
@@ -56,7 +63,7 @@ public class Tables {
 
 	private void createTableCategory() {
 
-		Log.d("TABLE", "in createTableCategory");
+		Log.d(TAG, "in createTableCategory");
 
 		String category_array[] = { "CAT_NAT", "CAT_INTER", "CAT_POLI",
 				"CAT_SPORTS", "CAT_ENTER" };
@@ -64,8 +71,6 @@ public class Tables {
 		String sql = "INSERT INTO " + MySQLiteHelper.TABLE_CATEGORY + " ("
 				+ MySQLiteHelper.COLUMN_ID + " ,"
 				+ MySQLiteHelper.COLUMN_CATEGORY_NAME + ")" + " VALUES(?, ?)";
-
-		Log.d("TABLE", "db.isOpen TC " + database.isOpen());
 
 		SQLiteStatement statement = database.compileStatement(sql);
 
@@ -80,7 +85,7 @@ public class Tables {
 
 	private void createTableNewsCat() {
 
-		Log.d("TABLE", "in createTableNewsCat");
+		Log.d(TAG, "in createTableNewsCat");
 
 		String link_array[] = { "CAT_NAT", "CAT_INTER", "CAT_POLI",
 				"CAT_SPORTS", "CAT_ENTER", "CAT_NAT", "CAT_INTER", "CAT_POLI",
@@ -93,8 +98,6 @@ public class Tables {
 				+ MySQLiteHelper.COLUMN_NEWSPAPER_ID + " ,"
 				+ MySQLiteHelper.COLUMN_CATEGORY_ID + " ,"
 				+ MySQLiteHelper.COLUMN_URL + ")" + " VALUES(?, ?, ?, ?)";
-
-		Log.d("TABLE", "db.isOpen TNC " + database.isOpen());
 
 		SQLiteStatement statement = database.compileStatement(sql);
 		int count = 1;
@@ -114,16 +117,32 @@ public class Tables {
 		}
 	}
 
+	public void createUserPrefTables(int[] ncup_array) {
+		Log.d(TAG, "in createUserPrefTables");
+
+		database.beginTransaction();
+
+		try {
+			createNCUPtable(ncup_array);
+			database.setTransactionSuccessful();
+		} finally {
+			database.endTransaction();
+			database.close();
+			MainActivity.source.close();
+		}
+	}
+
 	private void createNCUPtable(int[] ncup) {
 
-		Log.d("TABLE", "in createNCUPtable");
+		Log.d(TAG, "in createNCUPtable");
+
+		database.delete(MySQLiteHelper.TABLE_NCUP, null, null);
 
 		String sql = "INSERT INTO " + MySQLiteHelper.TABLE_NCUP + " ("
-				+ MySQLiteHelper.COLUMN_ID + " ,"
-				+ MySQLiteHelper.COLUMN_NEWSPAPER_ID + " ,"
-				+ MySQLiteHelper.COLUMN_CATEGORY_ID + ")" + " VALUES(?, ?, ?)";
-
-		Log.d("TABLE", "db.isOpen TNCUP " + database.isOpen());
+				+ MySQLiteHelper.COLUMN_ID + " ," + MySQLiteHelper.COLUMN_NC_ID
+				+ " ," + MySQLiteHelper.COLUMN_NEWSPAPER_ID + " ,"
+				+ MySQLiteHelper.COLUMN_CATEGORY_ID + ")"
+				+ " VALUES(?, ?, ?, ?)";
 
 		SQLiteStatement statement = database.compileStatement(sql);
 		int count = 1;
@@ -133,13 +152,35 @@ public class Tables {
 
 				if (ncup[(i * 5) + j] == 1) {
 					statement.clearBindings();
-					statement.bindLong(1, count);
-					statement.bindLong(2, i + 1);
-					statement.bindLong(3, j + 1);
+					statement.bindLong(2, count);
+					statement.bindLong(3, i + 1);
+					statement.bindLong(4, j + 1);
 					statement.execute();
 				}
 				count++;
 			}
 		}
+		checkTable();
+	}
+
+	public void checkTable() {
+		Log.d("TABLE", "Printing TABLE");
+		Log.d("TABLE", "==============");
+		// Checking Table
+		Cursor cursor = database.query(MySQLiteHelper.TABLE_NCUP, null, null,
+				null, null, null, null);
+		cursor.moveToFirst();
+		Log.d("TABLE", "id    np_id    news    cat");
+		while (!cursor.isAfterLast()) {
+			int id = cursor.getInt(0);
+			int np_id = cursor.getInt(1);
+			int news = cursor.getInt(2);
+			int cat = cursor.getInt(3);
+
+			Log.d("TABLE", id + "    " + np_id + "    " + news + "    " + cat);
+			cursor.moveToNext();
+		}
+		cursor.close();
+
 	}
 }
